@@ -104,7 +104,7 @@ Lệnh benchmark theo yêu cầu phát hành (seed 42, đo 30 giây):
 python3 tools/bench.py --seed 42 --duration 30 --out bench.json
 ```
 
-**Lưu ý bản mã hiện tại:** parser của `tools/bench.py` chưa nhận `--duration`; dùng lệnh tương đương `python3 tools/bench.py --seed 42 --measure-s 30 --out bench.json` cho đến khi người giữ benchmark bổ sung cờ này. Công cụ hiện đo tốc độ phản hồi `/state` của live qua HTTP; các trường `avg_fps`, `p1_low_fps` không phải phép đo render Canvas trong trình duyệt. Cần quyền mở socket localhost.
+**Giới hạn đã biết:** `--measure-s` vẫn nhận làm bí danh của `--duration`. Công cụ hiện đo tốc độ phản hồi `/state` của live qua HTTP; các trường `avg_fps`, `p1_low_fps` không phải phép đo render Canvas trong trình duyệt. Cần quyền mở socket localhost.
 
 Soak 10 Ngày, seed 7, xuất báo cáo JSON:
 
