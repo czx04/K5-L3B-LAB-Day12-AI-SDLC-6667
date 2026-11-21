@@ -1,5 +1,7 @@
 # Bằng chứng Phase 4 — Nam (đóng gói + QA regression)
 
+> **Cập nhật sau tích hợp:** các lỗi nêu dưới đây đã được xử lý. `735e4e3` cho `tools/smoke_p3.sh` nhận contract `"1.3"`; trên bản tích hợp `a154cbf`: unittest **239 test, OK**, smoke P3 **12/12 PASS** ([`integ-a154cbf/`](integ-a154cbf/), [ma trận phase 4](../../verification/phase-4.md) AC-P4-06). Từ `a154cbf` tới tag `phase-4` (`14342ef`) chỉ thêm `tools/package_release.sh` và một dòng trong `smoke_p3.sh`, không đổi code game. Phần dưới là biên bản gốc tại `162c7dd`, giữ làm lịch sử.
+
 ## 0–15': clone sạch + regression trên `dev` @ `162c7dd`
 
 `162c7dd` = contract v1.3 (Toan, PR #23) + bench/cảnh báo (Thái, PR #28).
