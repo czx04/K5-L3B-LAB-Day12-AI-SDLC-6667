@@ -267,7 +267,8 @@ class LiveServer:
     def __init__(self, game: LiveGame, host="127.0.0.1", port=8000):
         handler = type("Handler", (_Handler,), {"game": game})
         self.game = game
-        self.httpd = ThreadingHTTPServer((host, port), handler)
+        httpd_type = type("LiveHTTPServer", (ThreadingHTTPServer,), {"allow_reuse_address": True})
+        self.httpd = httpd_type((host, port), handler)
         self.httpd.daemon_threads = True
         self.host = host
         self.port = self.httpd.server_address[1]

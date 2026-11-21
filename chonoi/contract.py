@@ -24,8 +24,8 @@ def load_contract(path=DEFAULT_PATH) -> dict:
             c = json.load(f)
     except (OSError, ValueError) as e:
         raise BadInput(f"không đọc được {path}: {e}")
-    if not isinstance(c, dict) or c.get("contract_version") != "1.2":
-        raise BadInput("contract_version phải là 1.2")
+    if not isinstance(c, dict) or c.get("contract_version") not in ("1.2", "1.3"):
+        raise BadInput("contract_version phải là 1.2 hoặc 1.3")
     validate_tuning(c.get("tuning"))
     return c
 

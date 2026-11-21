@@ -1,10 +1,12 @@
 {
-  "contract_version": "1.2",
+  "contract_version": "1.3",
   "team": "6667",
   "team_size": 4,
   "build_cmd": "true",
   "run_cmd": "python3 -m chonoi.live --mode day",
   "headless_cmd": "python3 -m chonoi.headless",
+  "bench_cmd": "python3 tools/bench.py",
+  "soak_cmd": "python3 tools/soak.py",
   "tuning": {
     "tick_hz": 60,
     "freshness": {"initial": 100, "gather_decay_per_s": 0.5, "quan_decay_per_s": 0.25, "spoiled_below": 30},

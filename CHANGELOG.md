@@ -1,5 +1,10 @@
 # Changelog
-## Unreleased
+
+## v1.0.0 / v1.3 — Phase 4
+- **Hợp đồng & Cấu hình:** Bổ sung `contract_version: "1.3"`, khai báo `bench_cmd` (`python3 tools/bench.py`) và `soak_cmd` (`python3 tools/soak.py`) trong `game.contract.json`. Cập nhật `chonoi/contract.py` chấp nhận contract v1.3.
+- **Soak Testing:** Thêm `tools/soak.py` chạy bot tất định 10 Ngày (`gather` -> `quan` -> `shop`, lặp D1–D5 ở Ngày 6–10), đo độ ổn định và xuất kết quả `soak.json`.
+- **Benchmarking & UI Cảnh báo:** Đo hiệu năng cảnh lặn 1280×720 (`bench.json`), hỗ trợ 3 cảnh báo (thủy quái, sắp hết oxy, khách sắp giận) và chế độ tương phản cao.
+- **Đóng gói & Phát hành:** Chuẩn bị bản phát hành v1.0.0, cập nhật README, LICENSE và CREDITS.
 
 ## v1.2 — Phase 3
 
