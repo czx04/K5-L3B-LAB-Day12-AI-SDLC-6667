@@ -7,6 +7,9 @@ Mã AC bên dưới là ánh xạ QA cục bộ cho PRD docs/prd/phase-3.md.
 import json
 import math
 import os
+import shlex
+import subprocess
+import sys
 import unittest
 from fractions import Fraction
 
@@ -79,7 +82,8 @@ class FreshP3(unittest.TestCase):
             self.assertAlmostEqual(got["fresh"], want["fresh"], delta=0.01)
 
     def test_ac_p3_01_contract_v12(self):
-        self.assertEqual(CONTRACT["contract_version"], "1.2")
+        # P4 [THAY THẾ]: contract 1.3, gameplay/kho/JSONL giữ v1.2
+        self.assertEqual(CONTRACT["contract_version"], "1.3")
         self.freshness()
 
     def test_ac_p3_02_prd_threshold_fixture_spoiled_tick_one_exact_data(self):
@@ -308,6 +312,36 @@ class FreshP3(unittest.TestCase):
                     "--scenario", write_json(w.path("s.json"), {"quan": quan(stock=stock, customers=cs)}))
                 self.assertEqual(code, 2, err)
                 self.assertFalse(os.path.exists(w.path("o.jsonl")))
+
+
+class SoakP4(unittest.TestCase):
+    def test_soak_cli_two_days_results_and_determinism(self):
+        cmd = shlex.split(CONTRACT["soak_cmd"])
+        if sys.platform == "win32" and cmd and cmd[0] == "python3":
+            cmd[0] = sys.executable
+        runs = []
+        with Workdir() as w:
+            for run in range(2):
+                out = w.path("soak-{}.json".format(run))
+                proc = subprocess.run(
+                    [*cmd, "--seed", "7", "--days", "2", "--out", out],
+                    cwd=ROOT, capture_output=True, text=True, timeout=120,
+                )
+                self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+                with open(out, encoding="utf-8") as f:
+                    data = json.load(f)
+                self.assertTrue({"days", "days_completed", "crashes", "results", "duration_s"} <= data.keys())
+                self.assertEqual(data["days"], 2)
+                self.assertEqual(data["days_completed"], data["days"])
+                self.assertEqual(data["crashes"], 0)
+                self.assertGreaterEqual(data["duration_s"], 0)
+                self.assertEqual(len(data["results"]), data["days"])
+                for day, result in enumerate(data["results"], 1):
+                    self.assertTrue({"day", "earned", "reputation", "score"} <= result.keys())
+                    self.assertEqual(result["day"], day)
+                    self.assertEqual(result["score"], result["earned"] + 100 * math.floor(result["reputation"]))
+                runs.append(data["results"])
+        self.assertEqual(runs[0], runs[1])
 
 
 if __name__ == "__main__":

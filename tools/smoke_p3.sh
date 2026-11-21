@@ -18,7 +18,7 @@ check() { local label="$1"; shift; if "$@"; then record PASS "$label"; else reco
 headless_cmd="$(python3 -c 'import json; print(json.load(open("game.contract.json", encoding="utf-8"))["headless_cmd"])')"
 headless() { python3 -c 'import shlex, subprocess, sys; sys.exit(subprocess.call(shlex.split(sys.argv[1]) + sys.argv[2:]))' "$headless_cmd" "$@"; }
 
-check contract_v1_2 python3 -c 'import json; d=json.load(open("game.contract.json")); assert d["contract_version"]=="1.2"; f=d["tuning"]["freshness"]; assert (f["initial"],f["gather_decay_per_s"],f["quan_decay_per_s"],f["spoiled_below"])==(100,0.5,0.25,30)'
+check contract_v1_2_or_1_3 python3 -c 'import json; d=json.load(open("game.contract.json")); assert d["contract_version"] in ("1.2","1.3")  # P4: 1.3 chỉ thêm bench/soak, gameplay v1.2; f=d["tuning"]["freshness"]; assert (f["initial"],f["gather_decay_per_s"],f["quan_decay_per_s"],f["spoiled_below"])==(100,0.5,0.25,30)'
 
 # (a) Ngưỡng 30: fixture PRD, gather một bước không input -> spoiled tick 1
 printf '%s\n' '{"gather":{"hold":[{"id":"I1","kind":"ca_linh","fresh":30}],"random_fish":false,"monsters":[]}}' > "$out/threshold.json"

@@ -1,0 +1,23 @@
+PASS headless_cmd
+đầu vào sai: cá thể cần đúng id, kind, fresh
+FAIL gather_process
+đầu vào sai: không đọc được file kho docs/proof/phase-1/smoke-a154cbf/catch.json: [Errno 2] No such file or directory: 'docs/proof/phase-1/smoke-a154cbf/catch.json'
+FAIL quan_process
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+FileNotFoundError: [Errno 2] No such file or directory: 'docs/proof/phase-1/smoke-a154cbf/catch.json'
+FAIL catch_schema_and_items
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+FileNotFoundError: [Errno 2] No such file or directory: 'docs/proof/phase-1/smoke-a154cbf/quan.jsonl'
+FAIL quan_tick_zero_stock
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+FileNotFoundError: [Errno 2] No such file or directory: 'docs/proof/phase-1/smoke-a154cbf/gather.jsonl'
+FAIL gather_end_docked
+đầu vào sai: cá thể cần đúng id, kind, fresh
+FAIL repeat_gather_process
+FAIL deterministic_jsonl
+FAIL deterministic_inventory
+PASS unittest
+Evidence: docs/proof/phase-1/smoke-a154cbf
