@@ -1,0 +1,14 @@
+sha: de33d6aafa32fc404e7cbdd6c4d4e07aec6b17f0
+time_utc: 2026-11-21T07:27:30Z
+FAIL contract_v1_2
+PASS threshold_run
+PASS threshold_spoiled_tick1
+PASS gather_dock
+PASS quan_reads_file
+PASS handoff_matches
+PASS counted_inventory_exit_2
+PASS day_runs
+PASS gather_repeat
+PASS deterministic_jsonl
+PASS deterministic_inventory
+FAIL unittest
