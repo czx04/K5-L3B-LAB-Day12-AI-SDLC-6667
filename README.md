@@ -2,17 +2,19 @@
 
 Game 2D quản lý quán ăn miền Tây: buổi sáng Út Sen lặn bắt cá, hái bông trên sông Chín Khúc (`gather`); buổi tối nấu và phục vụ khách trên nhà bè của Má Tư (`quan`). Những gì mang về buổi sáng quyết định quán bán được món nào.
 
-Lab Day 12 · AI SDLC · Test Contract v1.1. Thành viên và vai: [`TEAM.md`](TEAM.md).
+Lab Day 12 · AI SDLC · Phát hành v1.0.0 · Test Contract v1.3 (gameplay, kho và JSONL giữ luật v1.2). Thành viên và vai: [`TEAM.md`](TEAM.md).
 
 ## Chạy từ clone sạch (macOS / Linux, chỉ cần Python 3, không cài thêm gì)
+
+Yêu cầu: macOS hoặc Linux có Git, Python 3 và trình duyệt hiện đại hỗ trợ Canvas/JavaScript. Game chỉ dùng thư viện chuẩn Python, không cần `pip`, engine hay bước build; CI dùng Python 3.12.
 
 ```bash
 git clone https://github.com/czx04/K5-L3B-LAB-Day12-AI-SDLC-6667.git
 cd K5-L3B-LAB-Day12-AI-SDLC-6667
-python3 -m chonoi.live --mode gather
+python3 -m chonoi.live --mode day
 ```
 
-Mở địa chỉ lệnh in ra (mặc định `http://127.0.0.1:8000/`). Muốn chơi buổi tối: `python3 -m chonoi.live --mode quan`.
+Mở địa chỉ lệnh in ra (mặc định `http://127.0.0.1:8000/`). Bấm **Chơi**, đọc lời dặn Má Tư rồi bấm **Bắt đầu buổi sáng**. Chơi riêng buổi sáng: `python3 -m chonoi.live --mode gather`; buổi tối: `python3 -m chonoi.live --mode quan`.
 
 **Chơi nối hai buổi:** mặc định, khi Gather kết thúc game tự chuyển sang Quán và mang theo kho:
 
@@ -36,12 +38,22 @@ python3 -m chonoi.live --mode quan --inventory kho.json
 | Space | Bắt đàn cá khi đang lặn | — |
 | R | Chơi lại | Chơi lại |
 
+**Esc / P** hoặc nút **Tạm dừng / Tiếp tục**: pause/resume (kể cả Shop). Trong Shop, bấm **Mua** ở Bình oxy/Áo phao; bấm **Đóng Shop / Ngày tiếp** để đi tiếp hoặc chờ Shop tự đóng. Nâng cấp áp dụng từ Ngày kế. Nút **Về menu** quay về menu. Thiết bị cảm ứng có nút di chuyển, E và Space trên màn hình.
+
+Bấm nút **Tương phản cao** trên thanh công cụ để bật/tắt; hiện chưa có phím tắt riêng.
+
+Cảnh báo bằng chữ và biểu tượng, không chỉ bằng màu:
+
+- **⚠ THỦY QUÁI GẦN**: thủy quái ở gần; bơi tránh xa.
+- **🫧 OXY SẮP HẾT**: oxy còn ≤ 25%; nổi lên mặt nước để hồi oxy.
+- **‼ KHÁCH SẮP GIẬN**: kiên nhẫn còn ≤ 25%; ưu tiên phục vụ.
+
 HUD buổi sáng: thời gian, oxy, Máu, giỏ. Buổi tối: kho khả dụng, món khách gọi, kiên nhẫn, trạng thái bếp, món trên tay, tiền, uy tín.
 
 ## Luật chính và cách tính điểm
 
 - **Buổi sáng:** dưới nước mất oxy, nổi lên thì hồi. Hết oxy thì cứ 60 tick ngạt mất 1 Máu; hết 3 Máu thì ngất, mất cả giỏ. Giỏ chứa 12 ô. Cập bến hoặc hết giờ thì phần trong giỏ thành kho của quán.
-- **Buổi tối:** khách đến theo lịch, gọi một trong 3 món nấu được từ kho và giữ nguyên liệu ngay. Nấu → bưng → phục vụ trước khi khách hết kiên nhẫn. Khách ăn xong trả tiền món; còn ≥ 50% kiên nhẫn lúc được phục vụ thì boa `floor(giá × 0.2)` và quán được +0.2 uy tín. Khách bỏ về vì chờ lâu: −0.5 uy tín. Uy tín trong [0, 5], bắt đầu 3.0.
+- **Buổi tối:** khách đến theo lịch, gọi một trong 3 món nấu được từ kho và giữ nguyên liệu ngay. Nấu → bưng → phục vụ trước khi khách hết kiên nhẫn. Nguyên liệu là từng cá thể có id/độ tươi; độ tươi giảm theo thời gian, dưới 30% là ươn và không dùng nấu. Giá món chốt khi bắt đầu nấu bằng `floor(giá niêm yết × độ tươi trung bình / 100)`. Khách ăn xong trả tiền món; còn ≥ 50% kiên nhẫn lúc được phục vụ thì boa `floor(giá đã chốt × 0.2)` và quán được +0.2 uy tín. Khách bỏ về vì chờ lâu: −0.5 uy tín. Uy tín trong [0, 5], bắt đầu 3.0.
 - **Điểm** (ở mọi snapshot và dòng `end`):
 
   ```
@@ -58,6 +70,14 @@ Số liệu đầy đủ ở [`game.contract.json`](game.contract.json); hợp �
 PYTHONPATH=tests:. python3 -m unittest discover -s tests -v
 ```
 
+Smoke Phase 3 (kho cá thể, ngưỡng ươn, bàn giao kho và tính tất định):
+
+```bash
+tools/smoke_p3.sh
+```
+
+Các smoke Phase 1/2 bên dưới giữ để tra lịch sử; fixture kho đếm đã được thay ở v1.2, xem [bằng chứng Phase 4](docs/proof/phase-4/README.md) về giới hạn regression hiện tại.
+
 Smoke hai tiến trình (gather → file kho → quan) và lưu bằng chứng vào `docs/proof/phase-1/smoke-<sha>/`:
 
 ```bash
@@ -67,15 +87,38 @@ tools/smoke_p1.sh
 ## Headless (Test Contract)
 
 ```bash
-python3 -m chonoi.headless --mode gather --seed 1 --ticks 600 --out out.jsonl [--scenario sc.json] [--inputs in.json] [--inventory-out kho.json]
-python3 -m chonoi.headless --mode quan --seed 1 --ticks 600 --out out.jsonl [--inventory kho.json]
+python3 -m chonoi.headless --mode gather --seed 1 --ticks 600 --out gather.jsonl
+python3 -m chonoi.headless --mode quan --seed 1 --ticks 600 --out quan.jsonl
+python3 -m chonoi.headless --mode day --days 5 --seed 1 --ticks 111000 --out day.jsonl
 ```
+
+Tùy chọn: `--scenario sc.json`, `--inputs in.json`; Gather có `--inventory-out kho.json`, Quán có `--inventory kho.json`. Kho dùng mảng cá thể `{id, kind, fresh}` theo v1.2; file kho đếm cũ không còn hợp lệ.
 
 Mã thoát: `0` bình thường · `2` tham số/dữ liệu sai · `1` lỗi chạy. Cùng seed và đầu vào → JSONL và file kho giống từng byte.
 
+## Benchmark và soak
+
+Lệnh benchmark theo yêu cầu phát hành (seed 42, đo 30 giây):
+
+```bash
+python3 tools/bench.py --seed 42 --duration 30 --out bench.json
+```
+
+**Lưu ý bản mã hiện tại:** parser của `tools/bench.py` chưa nhận `--duration`; dùng lệnh tương đương `python3 tools/bench.py --seed 42 --measure-s 30 --out bench.json` cho đến khi người giữ benchmark bổ sung cờ này. Công cụ hiện đo tốc độ phản hồi `/state` của live qua HTTP; các trường `avg_fps`, `p1_low_fps` không phải phép đo render Canvas trong trình duyệt. Cần quyền mở socket localhost.
+
+Soak 10 Ngày, seed 7, xuất báo cáo JSON:
+
+```bash
+python3 tools/soak.py --seed 7 --days 10 --out soak.json
+```
+
 ## Sáng tạo của nhóm
 
-Phase 1 chưa có phần tự sáng tạo; nhóm làm lõi đúng trước. Khi thêm, ghi ở đây kèm bằng chứng lõi vẫn đúng (phần thêm tắt ở headless).
+Giao diện live có cảnh sông vẽ bằng Canvas (cá, rong, bong bóng), HUD kho cá thể/độ tươi, thông báo sự kiện và nút cảm ứng. Đây là phần trình bày của live, không chạy trong headless và không thay luật mô phỏng. Chưa bật các mở rộng weapon/net/snake/burn/vendor/ca_ho/settings; không coi các tính năng lõi bắt buộc của phase là sáng tạo thêm.
+
+## Phát hành v1.0.0
+
+Tải bản đóng gói tại [GitHub Release v1.0.0](https://github.com/czx04/K5-L3B-LAB-Day12-AI-SDLC-6667/releases/tag/v1.0.0), giải nén, vào thư mục chứa `game.contract.json` rồi chạy `python3 -m chonoi.live --mode day`. Môi trường như mục chạy từ clone sạch. Giấy phép và nguồn tài nguyên: [LICENSE](LICENSE), [CREDITS.md](CREDITS.md).
 
 ## Tài liệu nhóm
 
