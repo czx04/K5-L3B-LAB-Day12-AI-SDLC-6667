@@ -51,6 +51,8 @@ class LiveGame:
         self._lock = threading.Lock()
         self._stop = threading.Event()
         self._thread = None
+        self._bench_started = time.perf_counter()
+        self._bench_ticks = 0
         self._reset()
 
     def _reset(self):
@@ -77,6 +79,7 @@ class LiveGame:
         nxt = time.perf_counter()
         while not self._stop.is_set():
             nxt += TICK_S
+            self._bench_ticks += 1
             with self._lock:
                 try:
                     self._tick_once()
@@ -146,6 +149,10 @@ class LiveGame:
             snap["finished"] = self.session.done
             snap["reason"] = self.session.sim.reason if self.session.done else None
             snap["error"] = self.error
+            snap["live_metrics"] = {
+                "uptime_s": round(time.perf_counter() - self._bench_started, 3),
+                "ticks": self._bench_ticks,
+            }
             return json.dumps(snap, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
 
     def set_input(self, body: dict):
@@ -212,6 +219,10 @@ class _Handler(BaseHTTPRequestHandler):
         path = self.path.split("?", 1)[0]
         if path == "/state":
             self._send(200, self.game.state_json())
+        elif path == "/metrics":
+            state = json.loads(self.game.state_json().decode("utf-8"))
+            self._send(200, json.dumps({"live_metrics": state["live_metrics"]},
+                                       ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
         elif path in ("/", "/index.html"):
             try:
                 with open(os.path.join(WEB_DIR, "index.html"), "rb") as f:
