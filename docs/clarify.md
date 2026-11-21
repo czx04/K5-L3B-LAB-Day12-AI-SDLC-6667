@@ -34,3 +34,13 @@ Nguồn: [PRD Phase 3](prd/phase-3.md). Các dòng P1–P2 phía trên là lịc
 | P3-04 | 2026-11-21 | `customers[].reserved` phải xuất theo thứ tự nào? | Là mảng id, không lặp; PRD chưa chốt thứ tự mảng phần giữ. QA so tập id cho công thức nhiều cá thể, chỉ ép thứ tự mà PRD quy định ở cook_started `(kind,id)` và các mảng thực thể theo id. | giả định | QA; PO cần xác nhận |
 | P3-05 | 2026-11-21 | Mã AC-P3-xx chính thức nằm ở đâu? | PRD hiện không liệt kê mã AC; dùng mã QA cục bộ 01–24 theo tên test và docs/plan/phase-3.md. Tích hợp viên nối vào verification, đổi ánh xạ nếu PO cung cấp mã chính thức. | giả định | QA; PO cần xác nhận |
 | P3-06 | 2026-11-21 | Hàng mua Chợ Chú Sáu có lệnh mua nguyên liệu nào ở bản nền? | Contract P2 trong worktree chỉ khai nâng cấp oxygen/hp. Chưa tự thêm lệnh mua nguyên liệu; nếu lát C có hỗ trợ từ nguồn chuẩn khác, cần cung cấp giao diện để QA bổ sung kiểm fresh 100/id mới/chờ nhập không hao. | giả định | QA; PO/tích hợp viên cần trả lời |
+
+## Phase 4
+
+Nguồn đối chiếu: [kế hoạch P4](plan/phase-4.md), [proof P4](proof/phase-4/README.md), `game.contract.json` và diff với tag `phase-3`. Đây là giả định chờ PO xác nhận; không bổ sung luật gameplay/kho/JSONL ngoài v1.2.
+
+| # | Ngày giờ | Câu hỏi | Trả lời / giả định | Trạng thái | Ai quyết |
+|---|---|---|---|---|---|
+| P4-01 | 2026-11-21 | Bench đo vòng mô phỏng, cổng `/state` hay khung render trình duyệt? | Tạm hiểu cần đo khung render của cảnh lặn 1280×720, seed 42, làm nóng 3 s rồi đo 30 s theo kế hoạch. Bench tại `c73d78b` đếm lượt HTTP `/state`, không đo khung render; chưa dùng số này để xác nhận FPS render. PO cần chốt đại lượng và cách đo. | giả định | TODO(nhóm): hỏi PO |
+| P4-02 | 2026-11-21 | Soak lấy `earned`/`score` từng Ngày ở thời điểm nào? | Lấy tại lúc Shop đóng (`shop_end`), sau giao dịch Shop, trước khi dữ liệu Ngày kế tiếp thay thế; `earned` là tổng tích lũy, `score = earned + reputation_multiplier × floor(reputation)` theo runner hiện có, không dùng tiền còn lại sau mua làm doanh thu. Kế hoạch D1–D5 lặp cho Ngày 6–10. | giả định | TODO(nhóm): hỏi PO |
+| P4-03 | 2026-11-21 | Test Contract v1.3 thay gameplay/kho/JSONL không? | Chỉ tăng `contract_version` lên `1.3` và thêm `bench_cmd`/`soak_cmd`; gameplay, kho cá thể, độ tươi và JSONL giữ v1.2. Diff `git diff phase-3 c73d78b -- game.contract.json` chỉ có ba thay đổi này; chưa suy thêm luật từ số phiên bản. | giả định | TODO(nhóm): hỏi PO |
