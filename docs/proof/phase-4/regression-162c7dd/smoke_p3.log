@@ -15,4 +15,4 @@ PASS gather_repeat
 PASS deterministic_jsonl
 PASS deterministic_inventory
 FAIL unittest
-Evidence: docs/proof/phase-3/smoke-de33d6a
+Evidence: docs/proof/phase-3/smoke-162c7dd

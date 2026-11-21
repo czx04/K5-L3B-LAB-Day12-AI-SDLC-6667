@@ -111,6 +111,7 @@ test_surface_prevents_choke (test_gather_sim.TestGatherSim.test_surface_prevents
 test_basket_and_instructions_have_separate_elements (test_live.LiveHudTest.test_basket_and_instructions_have_separate_elements) ... skipped 'HUD JavaScript checks require Node.js'
 test_individual_freshness_threshold_and_reserved_ids (test_live.LiveHudTest.test_individual_freshness_threshold_and_reserved_ids) ... skipped 'HUD JavaScript checks require Node.js'
 test_legacy_and_missing_inventory_fields (test_live.LiveHudTest.test_legacy_and_missing_inventory_fields) ... skipped 'HUD JavaScript checks require Node.js'
+test_phase4_three_context_warnings_and_contrast_toggle (test_live.LiveHudTest.test_phase4_three_context_warnings_and_contrast_toggle) ... skipped 'HUD JavaScript checks require Node.js'
 test_shop_individual_stock_and_legacy_count_stock (test_live.LiveHudTest.test_shop_individual_stock_and_legacy_count_stock) ... skipped 'HUD JavaScript checks require Node.js'
 test_spoiled_event_before_another_event_is_not_skipped_or_repeated (test_live.LiveHudTest.test_spoiled_event_before_another_event_is_not_skipped_or_repeated) ... skipped 'HUD JavaScript checks require Node.js'
 test_auto_transition_can_be_disabled (test_live.LiveServerTest.test_auto_transition_can_be_disabled) ... ok
@@ -244,7 +245,7 @@ test_wrong_size_duplicate_and_outsider (test_team_check.TeamCheck.test_wrong_siz
 FAIL: test_ac_p3_01_contract_v12 (test_fresh_p3.FreshP3.test_ac_p3_01_contract_v12)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "C:\Users\Ishod\AppData\Local\Temp\claude\ed3605a07b4f4102\d71fd163-1b6b-448d-ba24-8516d33097c3\scratchpad\p4\clean\tests\test_fresh_p3.py", line 82, in test_ac_p3_01_contract_v12
+  File "C:\Users\Ishod\AppData\Local\Temp\claude\ed3605a07b4f4102\d71fd163-1b6b-448d-ba24-8516d33097c3\scratchpad\p4b\clean\tests\test_fresh_p3.py", line 82, in test_ac_p3_01_contract_v12
     self.assertEqual(CONTRACT["contract_version"], "1.2")
     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 AssertionError: '1.3' != '1.2'
@@ -255,6 +256,6 @@ AssertionError: '1.3' != '1.2'
 
 
 ----------------------------------------------------------------------
-Ran 233 tests in 78.269s
+Ran 234 tests in 68.737s
 
-FAILED (failures=1, skipped=5)
+FAILED (failures=1, skipped=6)
