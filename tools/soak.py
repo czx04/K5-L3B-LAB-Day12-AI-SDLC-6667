@@ -5,7 +5,7 @@ Xuất file soak.json với các trường:
   - days: số ngày mục tiêu (10)
   - days_completed: số ngày hoàn thành thực tế
   - crashes: số lần crash (0 nếu ổn định)
-  - results: mảng kết quả từng ngày
+  - results: kết quả khi Shop đóng (day, earned tích lũy, reputation, score)
   - duration_s: tổng thời gian chạy (giây)
 """
 
@@ -159,8 +159,10 @@ def run_soak(days=10, seed=42, contract_path=None):
                         "served": curr_day_stats["served"],
                         "left": curr_day_stats["left"],
                         "money": sim.money,
+                        "earned": sim.earned,
                         "tips": curr_day_stats["tips"],
-                        "reputation": round(sim.reputation, 2),
+                        "reputation": sim.reputation,
+                        "score": sim.earned + tuning["score"]["reputation_multiplier"] * math.floor(sim.reputation),
                         "upgrades": dict(sim.upgrades),
                         "sales": dict(sim.sales),
                     })

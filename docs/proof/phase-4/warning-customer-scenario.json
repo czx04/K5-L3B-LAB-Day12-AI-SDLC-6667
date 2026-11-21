@@ -1,0 +1,1 @@
+{"quan":{"random_customers":false,"stock":[{"id":"I1","kind":"bong_sung","fresh":90},{"id":"I2","kind":"bong_sung","fresh":80}],"customers":[{"id":"C1","table_id":"T1","dish_id":"goi_bong_sung","patience_ticks_left":700}]}}

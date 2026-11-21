@@ -1,0 +1,29 @@
+PASS headless_cmd
+đầu vào sai: cá thể cần đúng id, kind, fresh
+FAIL gather_process
+đầu vào sai: không đọc được file kho docs/proof/phase-1/smoke-162c7dd/catch.json: [Errno 2] No such file or directory: 'docs/proof/phase-1/smoke-162c7dd/catch.json'
+FAIL quan_process
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import json,sys; assert json.load(open(sys.argv[1])) == {"items":{"bong_sung":2,"ca_loc":1}}
+                                      ~~~~^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'docs/proof/phase-1/smoke-162c7dd/catch.json'
+FAIL catch_schema_and_items
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import json,sys; rows=[json.loads(s) for s in open(sys.argv[1]) if s.strip()]; ss=[r for r in rows if r.get("type")=="snapshot" and r.get("tick")==0]; assert len(ss)==1; assert ss[0].get("stock")=={"bong_sung":2,"ca_loc":1}
+                                                  ~~~~^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'docs/proof/phase-1/smoke-162c7dd/quan.jsonl'
+FAIL quan_tick_zero_stock
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import json,sys; rows=[json.loads(s) for s in open(sys.argv[1]) if s.strip()]; es=[r for r in rows if r.get("type")=="event" and r.get("name")=="gather_end"]; assert len(es)==1; assert es[0].get("data")=={"reason":"docked","inventory":{"items":{"bong_sung":2,"ca_loc":1}}}
+                                                  ~~~~^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'docs/proof/phase-1/smoke-162c7dd/gather.jsonl'
+FAIL gather_end_docked
+đầu vào sai: cá thể cần đúng id, kind, fresh
+FAIL repeat_gather_process
+FAIL deterministic_jsonl
+FAIL deterministic_inventory
+FAIL unittest
+Evidence: docs/proof/phase-1/smoke-162c7dd

@@ -1,0 +1,7 @@
+đầu vào sai: cá thể cần đúng id, kind, fresh
+Traceback (most recent call last):
+  File "<stdin>", line 23, in <module>
+  File "<stdin>", line 18, in run
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.12/bin/python3', '-m', 'chonoi.headless', '--mode', 'gather', '--seed', '42', '--ticks', '1', '--out', 'docs/proof/phase-2/smoke-local/gather.jsonl', '--scenario', 'docs/proof/phase-2/smoke-local/dock.json', '--inputs', 'docs/proof/phase-2/smoke-local/dock-inputs.json', '--inventory-out', 'docs/proof/phase-2/smoke-local/inventory.json']' returned non-zero exit status 2.

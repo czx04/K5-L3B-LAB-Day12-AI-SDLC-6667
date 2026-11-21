@@ -1,0 +1,154 @@
+{
+  "days": 10,
+  "days_completed": 10,
+  "crashes": 0,
+  "results": [
+    {
+      "day": 1,
+      "served": 1,
+      "left": 0,
+      "money": 42,
+      "earned": 42,
+      "tips": 7,
+      "reputation": 3.2,
+      "score": 342,
+      "upgrades": {},
+      "sales": {
+        "goi_bong_sung": 1
+      }
+    },
+    {
+      "day": 2,
+      "served": 0,
+      "left": 0,
+      "money": 42,
+      "earned": 42,
+      "tips": 0,
+      "reputation": 3.2,
+      "score": 342,
+      "upgrades": {},
+      "sales": {
+        "goi_bong_sung": 1
+      }
+    },
+    {
+      "day": 3,
+      "served": 1,
+      "left": 0,
+      "money": 84,
+      "earned": 84,
+      "tips": 7,
+      "reputation": 3.4,
+      "score": 384,
+      "upgrades": {},
+      "sales": {
+        "goi_bong_sung": 2
+      }
+    },
+    {
+      "day": 4,
+      "served": 1,
+      "left": 0,
+      "money": 126,
+      "earned": 126,
+      "tips": 7,
+      "reputation": 3.6,
+      "score": 426,
+      "upgrades": {},
+      "sales": {
+        "goi_bong_sung": 3
+      }
+    },
+    {
+      "day": 5,
+      "served": 0,
+      "left": 0,
+      "money": 126,
+      "earned": 126,
+      "tips": 0,
+      "reputation": 3.6,
+      "score": 426,
+      "upgrades": {},
+      "sales": {
+        "goi_bong_sung": 3
+      }
+    },
+    {
+      "day": 6,
+      "served": 1,
+      "left": 0,
+      "money": 168,
+      "earned": 168,
+      "tips": 7,
+      "reputation": 3.8,
+      "score": 468,
+      "upgrades": {},
+      "sales": {
+        "goi_bong_sung": 4
+      }
+    },
+    {
+      "day": 7,
+      "served": 0,
+      "left": 0,
+      "money": 168,
+      "earned": 168,
+      "tips": 0,
+      "reputation": 3.8,
+      "score": 468,
+      "upgrades": {},
+      "sales": {
+        "goi_bong_sung": 4
+      }
+    },
+    {
+      "day": 8,
+      "served": 1,
+      "left": 0,
+      "money": 10,
+      "earned": 210,
+      "tips": 7,
+      "reputation": 4.0,
+      "score": 610,
+      "upgrades": {
+        "oxygen": 1
+      },
+      "sales": {
+        "goi_bong_sung": 5
+      }
+    },
+    {
+      "day": 9,
+      "served": 1,
+      "left": 0,
+      "money": 52,
+      "earned": 252,
+      "tips": 7,
+      "reputation": 4.2,
+      "score": 652,
+      "upgrades": {
+        "oxygen": 1
+      },
+      "sales": {
+        "goi_bong_sung": 6
+      }
+    },
+    {
+      "day": 10,
+      "served": 0,
+      "left": 0,
+      "money": 52,
+      "earned": 252,
+      "tips": 0,
+      "reputation": 4.2,
+      "score": 652,
+      "upgrades": {
+        "oxygen": 1
+      },
+      "sales": {
+        "goi_bong_sung": 6
+      }
+    }
+  ],
+  "duration_s": 2.005
+}
