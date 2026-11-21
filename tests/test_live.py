@@ -1,9 +1,11 @@
 """Test cửa sổ chơi trực tiếp (chonoi.live). Chỉ dành cho starter Python: nhóm đổi ngôn ngữ thì xóa file này."""
 
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
+import tempfile
 import time
 import unittest
 import urllib.error
@@ -33,8 +35,25 @@ def _post(url, obj):
 class LiveHudTest(unittest.TestCase):
     """Execute the shipped client with a tiny DOM; no sim freshness dependency."""
 
+    def test_phase4_three_context_warnings_and_contrast_toggle(self):
+        self.run_client(r"""
+snap={phase:'gather',screen:'playing',state:'playing',player:{pos:[60,20],oxygen_ticks:100,oxygen_max_ticks:400},
+  monsters:[{pos:[65,20]}],meta:{monsters:{detect_radius:10}}};
+updateWarnings();
+assert.equal(elements.get('warning-panel').hidden,false);
+assert.equal(elements.get('warning-monster').hidden,false);
+assert.equal(elements.get('warning-oxygen').hidden,false);
+snap={phase:'quan',screen:'playing',state:'playing',meta:{patience_s:60},customers:[{patience_ticks_left:900}]};
+updateWarnings();
+assert.equal(elements.get('warning-customer').hidden,false);
+assert.equal(elements.get('warning-monster').hidden,true);
+snap={phase:'gather',screen:'playing',state:'paused',player:{pos:[60,20],oxygen_ticks:1,oxygen_max_ticks:400}};
+updateWarnings();
+assert.equal(elements.get('warning-panel').hidden,true);
+""")
+
     def run_client(self, checks):
-        html = (Path(__file__).resolve().parents[1] / "chonoi/web/index.html").read_text()
+        html = (Path(__file__).resolve().parents[1] / "chonoi/web/index.html").read_text(encoding="utf-8")
         script = html.split("<script>", 1)[1].split("</script>", 1)[0]
         harness = r"""
 const assert = require('node:assert/strict');
@@ -52,9 +71,16 @@ const performance={now:()=>0};
 const addEventListener=()=>{}, requestAnimationFrame=()=>{}, setTimeout=()=>{};
 const fetch=()=>new Promise(()=>{});
 """
-        result = subprocess.run(["node", "-e", harness + script + checks],
-                                text=True, capture_output=True, timeout=10)
-        self.assertEqual(result.returncode, 0, result.stderr)
+        fd, js_path = tempfile.mkstemp(prefix="chonoi-live-", suffix=".js")
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
+                handle.write(harness + script + checks)
+            result = subprocess.run(["node", js_path],
+                                    text=True, capture_output=True, timeout=10)
+            self.assertEqual(result.returncode, 0, result.stderr)
+        finally:
+            if os.path.exists(js_path):
+                os.unlink(js_path)
 
     def test_individual_freshness_threshold_and_reserved_ids(self):
         self.run_client(r"""
@@ -167,6 +193,11 @@ class LiveServerTest(unittest.TestCase):
             self.assertEqual(code, 200)
             st = json.loads(body)
             self.assertIn("tick", st)
+            self.assertIn("live_metrics", st)
+            self.assertIn("ticks", st["live_metrics"])
+            code, metrics = _get(base + "/metrics")
+            self.assertEqual(code, 200)
+            self.assertIn("live_metrics", json.loads(metrics))
             self.assertEqual(st["mode"], "gather")
             self.assertEqual(st["player"]["pos"], [2, 0])
             self.assertEqual(_post(base + "/input", {"move": [1, 0], "interact": False, "catch": False}), 200)
