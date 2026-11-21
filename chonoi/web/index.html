@@ -24,6 +24,19 @@
   @media (pointer: coarse) { #touch-controls { display: flex; } }
   #toolbar { position:fixed;right:16px;top:12px;display:flex;gap:8px;z-index:45; }
   button { font:inherit;cursor:pointer; }
+  #warning-panel { position:fixed;left:50%;top:12px;z-index:46;transform:translateX(-50%);
+    display:flex;gap:8px;pointer-events:none;max-width:min(760px,calc(100vw - 24px)); }
+  #warning-panel[hidden] { display:none; }
+  .warning { border:3px solid #000;border-radius:8px;padding:8px 10px;background:#ffd400;color:#111;font-weight:800;
+    box-shadow:0 2px 10px rgba(0,0,0,.45);white-space:nowrap; }
+  .warning.danger { background:#ff3b30;color:#fff;border-color:#fff; }
+  body.high-contrast { background:#000;color:#fff; }
+  body.high-contrast canvas { filter:contrast(1.35) saturate(.85); }
+  body.high-contrast #inventory-hud, body.high-contrast #plan,
+  body.high-contrast #flow article, body.high-contrast #toolbar button,
+  body.high-contrast #flow button { background:#000;color:#fff;border:3px solid #fff; }
+  body.high-contrast .inventory-item { background:#111;color:#fff;border:2px solid #fff; }
+  body.high-contrast .inventory-item.spoiled { background:#000;color:#fff;border-color:#ffea00; }
   #toolbar button, #flow button { background:#223b46;color:#f4f8fa;border:1px solid #6c8e9b;border-radius:8px;padding:10px 18px;min-height:44px;font-size:18px; }
   button:disabled { opacity:.45;cursor:default; }
   #flow { position:fixed;inset:0;z-index:40;background:rgba(10,20,28,.78);display:flex;align-items:center;justify-content:center;padding:20px;font-size:18px; }
@@ -49,7 +62,12 @@
 <body>
 <canvas id="c"></canvas>
 <section id="inventory-hud" aria-label="Nguyên liệu" hidden><strong id="inventory-title"></strong><div id="inventory-list" class="inventory-list"></div><div id="key-help"></div></section>
-<div id="toolbar"><button id="pause-button">Tạm dừng (P)</button><button id="menu-button">Về menu</button></div>
+<aside id="warning-panel" aria-live="assertive" aria-label="Cảnh báo" hidden>
+  <div id="warning-monster" class="warning danger" hidden>⚠ THỦY QUÁI GẦN</div>
+  <div id="warning-oxygen" class="warning" hidden>🫧 OXY SẮP HẾT</div>
+  <div id="warning-customer" class="warning danger" hidden>‼ KHÁCH SẮP GIẬN</div>
+</aside>
+<div id="toolbar"><button id="pause-button">Tạm dừng (P)</button><button id="contrast-button" aria-pressed="false">Tương phản cao</button><button id="menu-button">Về menu</button></div>
 <div id="plan" hidden></div>
 <div id="flow" role="dialog" aria-modal="true" aria-label="Chợ nổi" hidden><article id="flow-content"></article></div>
 <div id="connection">Mất kết nối</div>
@@ -180,6 +198,12 @@ async function pulse(button) {
 }
 document.getElementById("pause-button").onclick=()=>pulse("pause");
 document.getElementById("menu-button").onclick=()=>navigate("menu");
+document.getElementById("contrast-button").onclick=()=>{
+  const enabled=document.body.classList.toggle("high-contrast");
+  const button=document.getElementById("contrast-button");
+  button.setAttribute("aria-pressed",enabled ? "true" : "false");
+  button.textContent=enabled ? "Tắt tương phản cao" : "Tương phản cao";
+};
 let flowSignature="";
 function updateFlow() {
   const phase=snap.phase || snap.mode, paused=snap.state==="paused";
@@ -258,6 +282,7 @@ async function poll() {
     }
     updateFlow();
     updateInventoryHud();
+    updateWarnings();
     updateNotifications();
     offline = false;
   } catch (e) { offline = true; }
@@ -335,6 +360,41 @@ function renderInventory(parent,items,customers) {
     if(fresh !== null){const meter=document.createElement("progress");meter.max=100;meter.value=fresh;meter.setAttribute("aria-label",label.textContent);row.append(meter);}
     parent.append(row);
   });
+}
+function updateWarnings() {
+  const panel=document.getElementById("warning-panel");
+  if(!snap || snap.state==="paused" || (snap.screen && snap.screen !== "playing")){
+    panel.hidden=true;
+    ["monster","oxygen","customer"].forEach(k=>document.getElementById("warning-"+k).hidden=true);
+    return;
+  }
+  const phase=snap.phase || snap.mode;
+  let monster=false, oxygen=false, customer=false;
+  if(phase==="gather"){
+    const p=snap.player?.pos;
+    if(p){
+      const threshold=(snap.meta?.monsters?.detect_radius || 12);
+      monster=(snap.monsters || []).some(m=>{
+        if(!m.pos)return false;
+        const dx=m.pos[0]-p[0], dd=(m.pos[1]||0)-(p[1]||0);
+        return Math.hypot(dx,dd)<=threshold;
+      });
+    }
+    if(typeof snap.player?.oxygen_ticks==="number" && typeof snap.player?.oxygen_max_ticks==="number"){
+      oxygen=snap.player.oxygen_ticks/snap.player.oxygen_max_ticks<=0.25;
+    }
+  }
+  if(phase==="quan"){
+    const patienceMax=(snap.meta?.patience_s||0)*60;
+    customer=(snap.customers || []).some(c=>{
+      const left=c.patience_ticks_left;
+      return typeof left==="number" && patienceMax>0 && left/patienceMax<=0.25;
+    });
+  }
+  document.getElementById("warning-monster").hidden=!monster;
+  document.getElementById("warning-oxygen").hidden=!oxygen;
+  document.getElementById("warning-customer").hidden=!customer;
+  panel.hidden=!(monster||oxygen||customer);
 }
 function updateInventoryHud() {
   const phase=snap.phase || snap.mode, panel=document.getElementById("inventory-hud");
